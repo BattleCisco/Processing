@@ -1,17 +1,16 @@
 import java.lang.Math;
 
-
-int nameXPosition = 0;
-int nameYPosition = 10;
+float nameXPosition = 0;
+float nameYPosition = 10;
 
 float xVelocity = 0.1;
 float yVelocity = 0.1;
 
 float gravity = 1;
 
-int multiplier = 1;
-int character_width = 34 * multiplier;
-int character_height = 44 * multiplier;
+float multiplier = 1;
+float character_width = Math.round(34 * multiplier);
+float character_height = Math.round(44 * multiplier);
 
 int frames = 300;
 
@@ -23,26 +22,30 @@ void setup()
 
 void draw()
 {
-    drawSkyscraper(10, 10, multiplier);
-    print(frames);
-    print(" ");
-    print((float(frames % 1000) / 1000));
-    print(" ");
-    println(isNight());
+    if(isNight()){
+      background(23, 67, 102);
+      stroke(15, 86, 16);
+      fill(15, 86, 16);
+    }
+    else{
+      background(85, 171, 237);
+      stroke(37, 196, 29);
+      fill(37, 196, 29);
+    }
+    rect(0, height / 2, width, height / 2);
+
+    drawSkyscraper(690, 90, 0.5);
+    drawSkyscraper(578, 57, 0.7);
+    drawSkyscraper(434, 35, 1.0);
+    drawSkyscraper(254, 28, 1.2);
+    drawSkyscraper(20, 28, 1.5);
     frames++;
+    
+    _main();
 }
 
 void _main()
 {
-    //Adde r2#7734
-    drawA(0, 0, multiplier);
-    drawD(character_width, 0, multiplier);
-    drawD(character_width * 2, 0, multiplier);
-    drawE(character_width * 3, 0, multiplier);
-
-    drawR(Math.round(character_width * 4.5), 0, multiplier);
-    draw2(Math.round(character_width * 5.5), 0, multiplier);
-
     if(nameYPosition + character_height + yVelocity > height)
     {
         nameYPosition = height - character_height;
@@ -74,6 +77,7 @@ void _main()
       xVelocity = (10 + Math.round(Math.random() * 20)) * (xVelocity/Math.abs(xVelocity));
 
     println(xVelocity);
+    stroke(119, 9, 9);
     drawName(nameXPosition, nameYPosition, character_width, multiplier);
 }
 
@@ -82,7 +86,7 @@ boolean isNight()
     return (float(frames % 1000) / 1000) > 0.5;
 }
 
-void drawSkyscraper(int x, int y, int multiplier)
+void drawSkyscraper(float x, float y, float multiplier)
 {
       stroke(61, 61, 59);
       fill(61, 61, 59);
@@ -104,7 +108,7 @@ void drawSkyscraper(int x, int y, int multiplier)
       }
 }
 
-void drawWindow(int x, int y, int _width, int _height, int multiplier)
+void drawWindow(float x, float y, float _width, float _height, float multiplier)
 {
     if(isNight())
     {
@@ -121,9 +125,8 @@ void drawWindow(int x, int y, int _width, int _height, int multiplier)
       _height * multiplier);
 }
 
-void drawName(int x, int y, int character_width, int multiplier)
+void drawName(float x, float y, float character_width, float multiplier)
 {
-    background(170, 170, 255);
     drawA(x, y, multiplier);
     drawD(character_width + x, y, multiplier);
     drawD(character_width * 2 + x, y, multiplier);
@@ -134,7 +137,7 @@ void drawName(int x, int y, int character_width, int multiplier)
 
 }
 
-void drawA(int x, int y, int multiplier) //A
+void drawA(float x, float y, float multiplier) //A
 {
     line(
       x + 16.8 * multiplier,
@@ -153,23 +156,23 @@ void drawA(int x, int y, int multiplier) //A
       y + 21.2 * multiplier);
 }
 
-void drawD(int x, int y, int multiplier) //d
+void drawD(float x, float y, float multiplier) //d
 {
     line(
       x + 26.0 * multiplier,
       y + 3.0 * multiplier,
       x + 26.0 * multiplier,
       y + 41.0 * multiplier);
+    noFill();
     arc(
       x + 18.6 * multiplier,
       y + 28.8 * multiplier,
       23.1 * multiplier,
       22.9 * multiplier,
       0.86, 5.41, OPEN);
-    noFill();
 }
 
-void drawE(int x, int y, int multiplier) //e
+void drawE(float x, float y, float multiplier) //e
 {
     arc(
       x + 17.0 * multiplier,
@@ -186,23 +189,23 @@ void drawE(int x, int y, int multiplier) //e
 
 }
 
-void drawR(int x, int y, int multiplier) //r
+void drawR(float x, float y, float multiplier) //r
 {
     line(
       x + 9.6 * multiplier,
       y + 17.9 * multiplier,
       x + 9.5 * multiplier,
       y + 41.0 * multiplier);
+    noFill();
     arc(
       x + 20.6 * multiplier,
       y + 28.8 * multiplier,
       23.1 * multiplier,
       22.9 * multiplier,
       3.49, 4.53, OPEN);
-    noFill();
 }
 
-void draw2(int x, int y, int multiplier) //2
+void draw2(float x, float y, float multiplier) //2
 {
     line(
       x + 28.0 * multiplier,
@@ -214,11 +217,11 @@ void draw2(int x, int y, int multiplier) //2
       y + 21.9 * multiplier,
       x + 4.7 * multiplier,
       y + 41.0 * multiplier);
+    noFill();
     arc(
       x + 16.5 * multiplier,
       y + 14.3 * multiplier,
       23.0 * multiplier,
       20.3 * multiplier,
       3.45, 7.14, OPEN);
-    noFill();
 }
