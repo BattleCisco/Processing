@@ -1,17 +1,20 @@
-Player player1 = new Player(87, 83, 5, 0, 10, 100);
-Player player2 = new Player(38, 40, 0, 0, 10, 100);
+Player player1 = new Player(87, 83, 0, 0, 10, 200);
+Player player2 = new Player(38, 40, 0, 0, 10, 200);
 Ball ball = new Ball(0, 0, 25, 25, 0, 0);
 
 Player[] players = {player1, player2};
 int frame = 0;
 
+float player_speed = 6;
+
 void setup()
 {
 		size(640, 480);
-	  player2.rectangleObject.coordinates.x = width - 5;
+	  player2.rectangleObject.coordinates.x = width - player2.rectangleObject._width;
 	  ball.rectangleObject.coordinates.x = width / 2; //width / 2;
 	  ball.rectangleObject.coordinates.y = height / 2;
 	  strokeWeight(1.5);
+		//frameRate(8);
 }
 
 void draw()
@@ -23,11 +26,11 @@ void draw()
 		    {
 			      if(p.downIsPressed())
 			      {
-			        	p.rectangleObject.coordinates.y += 4;
+			        	p.rectangleObject.coordinates.y += player_speed;
 			      }
 			      if(p.upIsPressed())
 			      {
-			        	p.rectangleObject.coordinates.y -= 4;
+			        	p.rectangleObject.coordinates.y -= player_speed;
 			      }
 		    }
 		    p.draw();
@@ -37,17 +40,24 @@ void draw()
 		if(future_ball.isYOutOfBound())
 				ball.rectangleObject.y_velocity *= -1.0;
 
-		if(future_ball.collison(player1.rectangleObject) || future_ball.collison(player2.rectangleObject))
+		if(player1.rectangleObject.collison(future_ball) || player2.rectangleObject.collison(future_ball))
 				ball.rectangleObject.x_velocity *= -1.0;
 
-
+		//println(future_ball.collison(player1.rectangleObject), future_ball.collison(player2.rectangleObject));
 		ball.rectangleObject.tick();
 		ball.draw();
 }
 
 void keyPressed(){
-  	//println(key + " is pressed.");
-	  player1.pressKey();
+		if(keyCode == 72)
+		{
+			ball.rectangleObject.coordinates.x = width / 2;
+		  ball.rectangleObject.coordinates.y = height / 2;
+			ball.rectangleObject.x_velocity = 0.0;
+			ball.rectangleObject.y_velocity = 0.0;
+		}
+  	//println(key + " is pressed.", keyCode);
+		player1.pressKey();
 	  player2.pressKey();
 }
 
@@ -106,19 +116,19 @@ class RectangleObject {
 
     public Coordinates[] coordinates() {
 	      Coordinates[] coords = {
-	          new Coordinates(this.coordinates.x - this._width / 2,  this.coordinates.y - this._height / 2),
-	          new Coordinates(this.coordinates.x + this._width / 2,  this.coordinates.y - this._height / 2),
-	          new Coordinates(this.coordinates.x - this._width / 2,  this.coordinates.y + this._height / 2),
-	          new Coordinates(this.coordinates.x + this._width / 2,  this.coordinates.y + this._height / 2)
+	          new Coordinates(this.coordinates.x,  this.coordinates.y),
+	          new Coordinates(this.coordinates.x,  this.coordinates.y + this._height),
+						new Coordinates(this.coordinates.x + this._width,  this.coordinates.y),
+						new Coordinates(this.coordinates.x + this._width,  this.coordinates.y + this._height),
 	      };
 	      return coords;
     }
 
     public boolean collison(RectangleObject other) {
-        Coordinates top_left = new Coordinates(this.coordinates.x - this._width / 2,  this.coordinates.y - this._height / 2);
-        Coordinates bottom_right = new Coordinates(this.coordinates.x + this._width / 2,  this.coordinates.y + this._height / 2);
+        Coordinates top_left = new Coordinates(this.coordinates.x,  this.coordinates.y);
+        Coordinates bottom_right = new Coordinates(this.coordinates.x + this._width,  this.coordinates.y + this._height);
         for(Coordinates coord: other.coordinates()){
-          if (coord.isGreaterThan(top_left) && coord.isLessThan(bottom_right))
+					if (coord.isGreaterThan(top_left) && coord.isLessThan(bottom_right))
             	return true;
         }
         return false;
@@ -152,7 +162,7 @@ class RectangleObject {
     }
 
     public void draw() {
-      rect(this.coordinates.x - this._width/2, this.coordinates.y - this._height/2, this._width, this._height);
+      rect(this.coordinates.x, this.coordinates.y, this._width, this._height);
       fill(255);
     }
 }
