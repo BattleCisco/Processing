@@ -1,5 +1,5 @@
-Player player1 = new Player(87, 83, 0, 0, 10, 200);
-Player player2 = new Player(38, 40, 0, 0, 10, 200);
+Player player1 = new Player(87, 83, 0, 0, 10, 480);
+Player player2 = new Player(38, 40, 0, 0, 10, 480);
 Ball ball = new Ball(0, 0, 25, 25, 0, 0);
 
 Player[] players = {player1, player2};
@@ -36,7 +36,7 @@ void draw()
 		    p.draw();
 	  }
 
-		RectangleObject future_ball = ball.rectangleObject.peekForwardInTime();
+	  RectangleObject future_ball = ball.rectangleObject.peekForwardInTime();
 		if(future_ball.isYOutOfBound())
 				ball.rectangleObject.y_velocity *= -1.0;
 
@@ -46,13 +46,21 @@ void draw()
 		//println(future_ball.collison(player1.rectangleObject), future_ball.collison(player2.rectangleObject));
 		ball.rectangleObject.tick();
 		ball.draw();
+
+		strokeWeight(1.5);
+		int numberOfLines = 20;
+		for(float i=0; i < numberOfLines; i++)
+		{
+				line(width / 2, 20 + numberOfLines * i, width / 2, 20 + numberOfLines * (i + 1));
+		}
+	  strokeWeight(1.5);
 }
 
 void keyPressed(){
 		if(keyCode == 72)
 		{
-			ball.rectangleObject.coordinates.x = width / 2;
-		  ball.rectangleObject.coordinates.y = height / 2;
+			ball.rectangleObject.coordinates.x = width / 2 + 2;
+		  ball.rectangleObject.coordinates.y = height / 2 + 2;
 			ball.rectangleObject.x_velocity = 0.0;
 			ball.rectangleObject.y_velocity = 0.0;
 		}
@@ -229,8 +237,8 @@ class Ball {
     {
 	      if(this.rectangleObject.x_velocity == 0 && this.rectangleObject.y_velocity == 0)
 	      {
-		        this.rectangleObject.x_velocity = 5;
-		        this.rectangleObject.y_velocity = 5;
+		        this.rectangleObject.x_velocity = 8;
+		        this.rectangleObject.y_velocity = 8;
 	      }
     }
 
