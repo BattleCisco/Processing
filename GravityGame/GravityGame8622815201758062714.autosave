@@ -1,5 +1,5 @@
 Player player1 = new Player(87, 83, 0, 0, 10, 90);
-Player player2 = new Player(38, 40, 0, 0, 10, 90);
+//Player player2 = new Player(38, 40, 0, 0, 10, 90);
 Ball ball = new Ball(0, 0, 25, 25, 0, 0);
 
 Player[] players = {player1, player2};
@@ -19,64 +19,49 @@ void setup()
 	font = createFont("bit5x3.ttf", 120);
 }
 
+void draw_spaceship(float x, float y, float rotation)
+{
+	strokeWeight(1.0);
+	line(
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation)), 
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation))
+	);
+	line(
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation)), 
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation))
+	);
+	line(
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation)), 
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation))
+	);
+
+	strokeWeight(1.0);
+	line(
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation)), 
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation))
+	);
+	line(
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation)), 
+		(x + 0) * sin(radians(rotation)), 
+		(y + 0) * cos(radians(rotation))
+	);
+}
+
 void draw()
 {
-	background(0);
-	for(Player p: players)
-	{
-	    if(p.downIsPressed() ^ p.upIsPressed())
-	    {
-			if(p.downIsPressed())
-			{
-				p.rectangleObject.coordinates.y += player_speed;
-			}
-			if(p.upIsPressed())
-			{
-				p.rectangleObject.coordinates.y -= player_speed;
-			}
-	    }
-	    p.draw();
-	}
-
-	RectangleObject future_ball = ball.rectangleObject.peekForwardInTime();
-	if(future_ball.isYOutOfBound())
-		ball.rectangleObject.velocity.y *= -1.0;
-
-	if(future_ball.isXOutOfBound())
-	{
-		if(future_ball.coordinates.x > width / 2)
-			player2.score++;
-		else{
-			player1.score++;
-		}
-		ball.reset();
-
-	} 
-
-	if(player1.rectangleObject.collison(future_ball) || player2.rectangleObject.collison(future_ball))
-		ball.rectangleObject.velocity.x *= -1.0;
-
-	//println(future_ball.collison(player1.rectangleObject), future_ball.collison(player2.rectangleObject));
-	ball.rectangleObject.tick();
-	ball.draw();
-
-	strokeWeight(3);
-	stroke(255);
-	int numberOfLines = 25;
-	float lengthPerLine = (height - 40) / numberOfLines;
-	for(float i=0; i < numberOfLines; i++)
-	{	
-		if (i % 2 == 0)	
-			line(
-				width / 2, 
-				20 + lengthPerLine * i, 
-				width / 2, 
-				20 + lengthPerLine * (i + 1));
-	}
-	strokeWeight(1.5);
-	textFont(font);
-	text(player1.score, width / 2 - -23, 88);
-	text(player2.score, width / 2 - 69, 88);
+	int def=100;
+	line(def, 0, def, def);
+	line(0, def, def, def);
+	draw_spaceship(def/2, def/2, 0.0);
 }
 
 void keyPressed(){
