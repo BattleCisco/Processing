@@ -1,72 +1,99 @@
-Player player1 = new Player(87, 83, 0, 0, 10, 480);
-Player player2 = new Player(38, 40, 0, 0, 10, 480);
+Player player1 = new Player(87, 83, 0, 0, 10, 90);
+Player player2 = new Player(38, 40, 0, 0, 10, 90);
 Ball ball = new Ball(0, 0, 25, 25, 0, 0);
 
 Player[] players = {player1, player2};
 int frame = 0;
 
 float player_speed = 6;
+PFont font;
 
 void setup()
 {
-		size(640, 480);
-	  player2.rectangleObject.coordinates.x = width - player2.rectangleObject._width;
-	  ball.rectangleObject.coordinates.x = width / 2; //width / 2;
-	  ball.rectangleObject.coordinates.y = height / 2;
-	  strokeWeight(1.5);
-		//frameRate(8);
+	size(640, 480);
+	player2.rectangleObject.coordinates.x = width - player2.rectangleObject._size.x;
+	ball.rectangleObject.coordinates.x = width / 2 -  12.5; //width / 2;
+	ball.rectangleObject.coordinates.y = height / 2 - 12.5;
+	strokeWeight(1.5);
+	//frameRate(8);
+	font = createFont("bit5x3.ttf", 120);
 }
 
 void draw()
 {
-	  background(0);
-	  for(Player p: players)
-	  {
-		    if(p.downIsPressed() ^ p.upIsPressed())
-		    {
-			      if(p.downIsPressed())
-			      {
-			        	p.rectangleObject.coordinates.y += player_speed;
-			      }
-			      if(p.upIsPressed())
-			      {
-			        	p.rectangleObject.coordinates.y -= player_speed;
-			      }
-		    }
-		    p.draw();
-	  }
+	background(0);
+	for(Player p: players)
+	{
+	    if(p.downIsPressed() ^ p.upIsPressed())
+	    {
+			if(p.downIsPressed())
+			{
+				p.rectangleObject.coordinates.y += player_speed;
+			}
+			if(p.upIsPressed())
+			{
+				p.rectangleObject.coordinates.y -= player_speed;
+			}
+	    }
+	    p.draw();
+	}
 
-	  RectangleObject future_ball = ball.rectangleObject.peekForwardInTime();
-		if(future_ball.isYOutOfBound())
-				ball.rectangleObject.y_velocity *= -1.0;
+	RectangleObject future_ball = ball.rectangleObject.peekForwardInTime();
+	if(future_ball.isYOutOfBound())
+		ball.rectangleObject.velocity.y *= -1.0;
 
-		if(player1.rectangleObject.collison(future_ball) || player2.rectangleObject.collison(future_ball))
-				ball.rectangleObject.x_velocity *= -1.0;
-
-		//println(future_ball.collison(player1.rectangleObject), future_ball.collison(player2.rectangleObject));
-		ball.rectangleObject.tick();
-		ball.draw();
-
-		strokeWeight(1.5);
-		int numberOfLines = 20;
-		for(float i=0; i < numberOfLines; i++)
-		{
-				line(width / 2, 20 + numberOfLines * i, width / 2, 20 + numberOfLines * (i + 1));
+	if(future_ball.isXOutOfBound())
+	{
+		if(future_ball.coordinates.x > width / 2)
+			player2.score++;
+		else{
+			player1.score++;
 		}
-	  strokeWeight(1.5);
+		ball.reset();
+
+	} 
+
+	if(player1.rectangleObject.collison(future_ball) || player2.rectangleObject.collison(future_ball))
+		ball.rectangleObject.velocity.x *= -1.0;
+
+	//println(future_ball.collison(player1.rectangleObject), future_ball.collison(player2.rectangleObject));
+	ball.rectangleObject.tick();
+	ball.draw();
+
+	strokeWeight(3);
+	stroke(255);
+	int numberOfLines = 25;
+	float lengthPerLine = (height - 40) / numberOfLines;
+	for(float i=0; i < numberOfLines; i++)
+	{	
+		if (i % 2 == 0)	
+			line(
+				width / 2, 
+				20 + lengthPerLine * i, 
+				width / 2, 
+				20 + lengthPerLine * (i + 1));
+	}
+	strokeWeight(1.5);
+	textFont(font);
+	text(player1.score, width / 2 - -23, 88);
+	text(player2.score, width / 2 - 69, 88);
 }
 
 void keyPressed(){
-		if(keyCode == 72)
-		{
-			ball.rectangleObject.coordinates.x = width / 2 + 2;
-		  ball.rectangleObject.coordinates.y = height / 2 + 2;
-			ball.rectangleObject.x_velocity = 0.0;
-			ball.rectangleObject.y_velocity = 0.0;
-		}
+	if (keyCode == 74)
+	{
+		ball.serve();
+		println("Serving ball.");
+	}
+
+	if(keyCode == 72)
+	{
+		ball.reset();
+		println("Resetting ball.");
+	}
   	//println(key + " is pressed.", keyCode);
-		player1.pressKey();
-	  player2.pressKey();
+	player1.pressKey();
+	player2.pressKey();
 }
 
 void keyReleased(){
@@ -75,92 +102,154 @@ void keyReleased(){
 	  player2.releaseKey();
 }
 
-class Coordinates{
-		public float x, y;
+class FloatVector {
+    public float x, y;
 
-		Coordinates (float x, float y){
-				this.x = x;
-				this.y = y;
-		}
+    public FloatVector (float x, float y) {
+		this.x = x;
+		this.y = y;
+    }
 
-		public boolean isXOutOfBound()
-		{
-				return this.x > width || this.x < 0;
-		}
+	public FloatVector (float angle, float magnitude, boolean use_angle_input) {
+		this.x = cos(angle) * magnitude;
+		this.y = sin(angle) * magnitude;
+    }
 
-		public boolean isYOutOfBound()
-		{
-				return this.y > height || this.y < 0;
-		}
+	// public FloatVector copy() {
+	// 	return new FloatVector(this.x.clone(), this.y.clone());
+	// }
 
-		public boolean isGreaterThan(Coordinates other) {
-				return this.x > other.x && this.y > other.y;
-		}
+	public float mag()
+	{
+		return this.magnitude();
+	}
 
-		public boolean isLessThan(Coordinates other) {
-				return this.x < other.x && this.y < other.y;
-		}
+	public float magnitude() {
+		return sqrt(this.x * this.x + this.y * this.y);
+	}
+
+	public float magnitudeNoSqrt() {
+		return this.x * this.x + this.y * this.y;
+	}
+
+
+	public FloatVector add(FloatVector v1) {
+		return new FloatVector(this.x + v1.x, this.y + v1.y);
+	}
+
+	public void addTo(FloatVector v1) {
+		this.x += v1.x;
+		this.y += v1.y;
+	}
+
+	public FloatVector subtract(FloatVector v1) {
+		return new FloatVector(this.x - v1.x, this.y - v1.y);
+	}
+
+	public void subtractTo(FloatVector v1) {
+		this.x -= v1.x;
+		this.y -= v1.y;
+	}
+
+	public FloatVector multiply(int value) {
+		return new FloatVector(this.x * value, this.y * value);
+	}
+
+	public void multiplyTo(int value) {
+		this.x *= value;
+		this.y *= value;
+	}
+
+	public FloatVector divide(int value) {
+		return this.multiply(1 / value);
+	}
+
+	public void divideTo(int value) {
+		this.multiplyTo(1 / value);
+	}
+
+}
+
+class Coordinates extends FloatVector{
+	public Coordinates(float x, float y) {
+		super(x, y);
+	}
+
+	public Coordinates(FloatVector fv) {
+		super(fv.x, fv.y);
+	}
+
+	public boolean isXOutOfBound() {
+		return this.x > width || this.x < 0;
+	}
+
+	public boolean isYOutOfBound() {
+		return this.y > height || this.y < 0;
+	}
+
+	public boolean isGreaterThan(Coordinates other) {
+		return this.x > other.x && this.y > other.y;
+	}
+
+	public boolean isLessThan(Coordinates other) {
+		return this.x < other.x && this.y < other.y;
+	}
 }
 
 class RectangleObject {
-    public float _width, _height, x_velocity, y_velocity;
+    public FloatVector _size, velocity;
     public Coordinates coordinates;
 
-    RectangleObject (Coordinates coordinates, float _width, float _height, float x_velocity, float y_velocity) {
+    RectangleObject (Coordinates coordinates, FloatVector _size, FloatVector velocity) {
         this.coordinates = coordinates;
-        this._width = _width;
-        this._height = _height;
-        this.x_velocity = x_velocity;
-        this.y_velocity = y_velocity;
+        this._size = _size;
+        this.velocity = velocity;
     }
 
     RectangleObject (RectangleObject other) {
         this.coordinates = other.coordinates;
-        this._width = other._width;
-        this._height = other._height;
-        this.x_velocity = other.x_velocity;
-        this.y_velocity = other.y_velocity;
+        this._size = other._size;
+        this.velocity = other.velocity;
     }
 
     public Coordinates[] coordinates() {
-	      Coordinates[] coords = {
-	          new Coordinates(this.coordinates.x,  this.coordinates.y),
-	          new Coordinates(this.coordinates.x,  this.coordinates.y + this._height),
-						new Coordinates(this.coordinates.x + this._width,  this.coordinates.y),
-						new Coordinates(this.coordinates.x + this._width,  this.coordinates.y + this._height),
-	      };
-	      return coords;
+	    Coordinates[] coords = {
+	        new Coordinates(this.coordinates.x,  this.coordinates.y),
+	        new Coordinates(this.coordinates.x,  this.coordinates.y + this._size.y),
+			new Coordinates(this.coordinates.x + this._size.x,  this.coordinates.y),
+			new Coordinates(this.coordinates.x + this._size.x,  this.coordinates.y + this._size.y),
+		};
+		return coords;
     }
 
     public boolean collison(RectangleObject other) {
         Coordinates top_left = new Coordinates(this.coordinates.x,  this.coordinates.y);
-        Coordinates bottom_right = new Coordinates(this.coordinates.x + this._width,  this.coordinates.y + this._height);
+        Coordinates bottom_right = new Coordinates(this.coordinates.x + this._size.x,  this.coordinates.y + this._size.y);
         for(Coordinates coord: other.coordinates()){
-					if (coord.isGreaterThan(top_left) && coord.isLessThan(bottom_right))
+			if (coord.isGreaterThan(top_left) && coord.isLessThan(bottom_right))
             	return true;
         }
         return false;
     }
 
-		public boolean isXOutOfBound() {
-				for(Coordinates coord: this.coordinates()){
-					if (coord.isXOutOfBound())
-							return true;
-				}
-				return false;
-		}
+	public boolean isXOutOfBound() {
+			for(Coordinates coord: this.coordinates()){
+				if (coord.isXOutOfBound())
+						return true;
+			}
+			return false;
+	}
 
-		public boolean isYOutOfBound() {
-				for(Coordinates coord: this.coordinates()){
-					if (coord.isYOutOfBound())
-							return true;
-				}
-				return false;
-		}
+	public boolean isYOutOfBound() {
+			for(Coordinates coord: this.coordinates()){
+				if (coord.isYOutOfBound())
+						return true;
+			}
+			return false;
+	}
 
     public void tick() {
-       this.coordinates.x += this.x_velocity;
-       this.coordinates.y += this.y_velocity;
+       this.coordinates.addTo(this.velocity);
     }
 
     public RectangleObject peekForwardInTime() {
@@ -170,12 +259,13 @@ class RectangleObject {
     }
 
     public void draw() {
-      rect(this.coordinates.x, this.coordinates.y, this._width, this._height);
+      rect(this.coordinates.x, this.coordinates.y, this._size.x, this._size.y);
       fill(255);
     }
 }
 
 class Player {
+    public int score;
     public int upKey, downKey;
     public RectangleObject rectangleObject;
     public boolean upKeyPressed = false, downKeyPressed = false;
@@ -183,7 +273,8 @@ class Player {
     Player (int upKey, int downKey, float x, float y, float _width, float _height) {
         this.upKey = upKey;
         this.downKey = downKey;
-        this.rectangleObject = new RectangleObject(new Coordinates(x, y), _width, _height, 0.0, 0.0);
+        this.rectangleObject = new RectangleObject(new Coordinates(x, y), new FloatVector(_width, _height), new FloatVector(0, 0));
+        this.score = 0;
     }
 
     public boolean downIsPressed() {
@@ -203,30 +294,24 @@ class Player {
     }
 
     public void releaseKey() {
-      if (keyCode == 74)
-      {
-          ball.serve();
-          println("Serving ball.");
-      }
+		if(keyCode == this.upKey)
+			this.upKeyPressed = false;
 
-      if(keyCode == this.upKey)
-          this.upKeyPressed = false;
-
-      if(keyCode == this.downKey)
-          this.downKeyPressed = false;
+    	if(keyCode == this.downKey)
+        	this.downKeyPressed = false;
     }
 
-	  public void draw() {
-	    	this.rectangleObject.draw();
-	  }
+	public void draw() {
+		this.rectangleObject.draw();
+	}
 }
 
-class Ball {
+class Ball{
     public RectangleObject rectangleObject;
 
     Ball (float x, float y, float _width, float _height, float xVelocity, float yVelocity)
     {
-      	this.rectangleObject = new RectangleObject(new Coordinates(x, y), _width, _height, xVelocity, yVelocity);
+      	this.rectangleObject = new RectangleObject(new Coordinates(x, y), new FloatVector(_width, _height), new FloatVector(xVelocity, yVelocity));
     }
 
     public void draw() {
@@ -235,11 +320,16 @@ class Ball {
 
     public void serve()
     {
-	      if(this.rectangleObject.x_velocity == 0 && this.rectangleObject.y_velocity == 0)
-	      {
-		        this.rectangleObject.x_velocity = 8;
-		        this.rectangleObject.y_velocity = 8;
-	      }
+	    if(this.rectangleObject.velocity.x == 0 && this.rectangleObject.velocity.y == 0)
+	    {
+			this.rectangleObject.velocity = new FloatVector(4, 4);
+	    }
     }
+
+     public void reset()
+    {
+	   this.rectangleObject.velocity = new FloatVector(0, 0);
+	   this.rectangleObject.coordinates = new Coordinates(width / 2 - 12.5, height / 2 - 12.5);
+	}
 
 }

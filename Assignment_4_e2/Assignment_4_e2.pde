@@ -20,21 +20,26 @@ void draw() {
 
 }
 
-class Vector {
+class FloatVector {
     public float x, y;
 
-    public Vector (float x, float y) {
+    public FloatVector (float x, float y) {
 		this.x = x;
 		this.y = y;
     }
 
-	public Vector (float angle, float magnitude, boolean use_angle_input) {
+	public FloatVector (float angle, float magnitude, boolean use_angle_input) {
 		this.x = cos(angle) * magnitude;
 		this.y = sin(angle) * magnitude;
     }
 
 	public Vector copy() {
 		return new Vector(this.x.clone(), this.y.clone());
+	}
+
+	public float mag()
+	{
+		return this.magnitude();
 	}
 
 	public float magnitude() {
