@@ -3,8 +3,8 @@ Player player2 = new Player(38, 40, 0, 0, 10, 90);
 Ball ball = new Ball(0, 0, 25, 25, 0, 0);
 
 Player[] players = {player1, player2};
-int frame = 0;
 
+int frame = 0;
 float player_speed = 6;
 PFont font;
 
@@ -15,49 +15,71 @@ void setup()
 	ball.rectangleObject.coordinates.x = width / 2 -  12.5; //width / 2;
 	ball.rectangleObject.coordinates.y = height / 2 - 12.5;
 	strokeWeight(1.5);
+  stroke(255);
 	//frameRate(8);
 	font = createFont("bit5x3.ttf", 120);
 }
 
 void draw_spaceship(float x, float y, float rotation)
 {
-	strokeWeight(1.0);
-	line(
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation)), 
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation))
+	strokeWeight(4.1);
+  float f1 = 39.8;
+  float r1 = 0.869;
+  float f2 = -38.2;
+  float r2 = 0.001;
+  line(
+		x + f1 * sin(radians(rotation) + r1), 
+		y + f1 * cos(radians(rotation) + r1), 
+		x + f2 * sin(radians(rotation) + r2), 
+		y + f2 * cos(radians(rotation) + r2)
 	);
+  f1 = 0.0;
+  r1 = 0.001;
+  f2 = 0.0;
+  r2 = 0.001;
 	line(
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation)), 
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation))
-	);
-	line(
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation)), 
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation))
-	);
+    x + f1 * sin(radians(rotation) + r1), 
+    y + f1 * cos(radians(rotation) + r1), 
+    x + f2 * sin(radians(rotation) + r2), 
+    y + f2 * cos(radians(rotation) + r2)
+  );
+	f1 = 0.0;
+  r1 = 0.001;
+  f2 = 0.0;
+  r2 = 0.001;
+  line(
+    x + f1 * sin(radians(rotation) + r1), 
+    y + f1 * cos(radians(rotation) + r1), 
+    x + f2 * sin(radians(rotation) + r2), 
+    y + f2 * cos(radians(rotation) + r2)
+  );
 
 	strokeWeight(1.0);
-	line(
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation)), 
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation))
-	);
-	line(
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation)), 
-		(x + 0) * sin(radians(rotation)), 
-		(y + 0) * cos(radians(rotation))
-	);
+	f1 = 0.1;
+  r1 = 0.001;
+  f2 = 0.0;
+  r2 = 0.001;
+  line(
+    x + f1 * sin(radians(rotation) + r1), 
+    y + f1 * cos(radians(rotation) + r1), 
+    x + f2 * sin(radians(rotation) + r2), 
+    y + f2 * cos(radians(rotation) + r2)
+  );
+	f1 = 0.0;
+  r1 = 0.001;
+  f2 = 0.0;
+  r2 = 0.001;
+  line(
+    x + f1 * sin(radians(rotation) + r1), 
+    y + f1 * cos(radians(rotation) + r1), 
+    x + f2 * sin(radians(rotation) + r2), 
+    y + f2 * cos(radians(rotation) + r2)
+  );
 }
 
 void draw()
 {
+  background(0);
 	int def=100;
 	line(def, 0, def, def);
 	line(0, def, def, def);
