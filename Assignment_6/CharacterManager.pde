@@ -2,6 +2,8 @@ public class CharacterManager {
 	public Human[] testSubjects;
 	public int amountOfTestSubjects;
 
+	public float secondsPassedBeforeGameOver;
+
 	public CharacterManager (int amountOfTestSubjects) {
 		this.amountOfTestSubjects = amountOfTestSubjects;
 		this.testSubjects = new Human[amountOfTestSubjects];
@@ -9,6 +11,7 @@ public class CharacterManager {
 			this.testSubjects[i] = new Human(new FloatVector(random(0, width), random(0, height)), 5, random(0, 359), 30.0);
 		}
 		this.testSubjects[0] = new Zombie(new FloatVector(random(0, width), random(0, height)), 3, random(0, 359), 30.0);
+		this.secondsPassedBeforeGameOver = 0.0;
 	}
 
 	public void update() {

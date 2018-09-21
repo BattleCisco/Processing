@@ -8,8 +8,6 @@ public class Human {
 		this.speed = speed;
 		this.direction = direction;
 		this.size = size;
-		this.to_walk = 0;
-		this.walked = 0;
 	}
 
 	public void update_walk() {

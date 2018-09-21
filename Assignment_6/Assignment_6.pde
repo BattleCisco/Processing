@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 CharacterManager gm;
 
 void setup() {
@@ -11,17 +13,18 @@ void draw() {
 	background(0);
 	gm.update();
 	gm.draw();
-	//float def=100;
-	//strokeWeight(1.5);
-	//line(def, 0, def, def);
-	//line(0, def, def, def);
-	//draw_zombie(new FloatVector(def/2, def/2), 0, def/100, color(0, 255, 0));
-	//draw_human(new FloatVector(def/2, def/2), 0, def/100, color(234, 180, 63));
-	if(gm.isGameOver())
-	{
+	if(gm.isGameOver()) {
+		if(gm.secondsPassedBeforeGameOver == 0.0) {
+			gm.secondsPassedBeforeGameOver = millis() * 0.001f;
+		}
+
 		textSize(110);
 		fill(0, 0, 255);
 		text("Game over!", 10, 99);
+		textSize(40);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		text("Humans survived for " + df.format(gm.secondsPassedBeforeGameOver) + "s", 47, 155);
 	}
 
 }
