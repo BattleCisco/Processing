@@ -22,7 +22,7 @@ public class CharacterManager {
 				if(this.collision(this.testSubjects[i], this.testSubjects[j]))
 				{
 					println("Collision between " + i + " and " + j);
-					delay(5000);
+					//delay(1000);
 					if(this.testSubjects[i] instanceof Zombie) {
 						this.testSubjects[j] = new Zombie(this.testSubjects[j], 3);
 					}
@@ -49,6 +49,15 @@ public class CharacterManager {
 		println("Collision!");
 
 		return true;
+	}
+
+	public boolean isGameOver () {
+		boolean gameOver = true;
+		for(Human ts: this.testSubjects) {
+			if(!(ts instanceof Zombie))
+				gameOver = false;
+		}
+		return gameOver;
 	}
 
 	public void draw(){
