@@ -1,0 +1,248 @@
+public class FiaManager {
+	public Rectangle board;
+	public FloatVector position;
+	public float rotation, scalar;
+
+	public Player[] players;
+
+	public int amountOfPositions;
+	public FloatVector positionsStart;
+	public FloatVector positionsEnd;
+
+	public float baseBallRadius = 32.0;
+
+	public FiaManager (
+		Rectangle board, 
+		FloatVector position,
+		float rotation, 
+		float scalar,
+		int amountOfPositions,
+		FloatVector positionsStart,
+		FloatVector positionsEnd,
+		Player[] players) {
+		this.board = board;
+		this.position = position;
+		this.rotation = rotation;
+		this.scalar = scalar;
+
+		this.amountOfPositions = amountOfPositions;
+		this.positionsStart = positionsStart;
+		this.positionsEnd = positionsEnd;
+
+		this.players = players;
+	}
+
+	public FloatVector getPostionsSumVector() {
+		return this.positionsStart.add(this.positionsEnd);
+	}
+
+	public void drawPiece(ClassicPiece piece, int x, int y, Team team) {
+		//FloatVector positionToDraw = this.getPosition(x, y);
+		color teamColor = this.getTeamColor(team);
+		piece.draw(this, x, y, teamColor);
+	}
+
+	public FloatVector getPosition(int x, int y) {
+		FloatVector sizeVector = this.getPostionsSumVector();
+		float xPosition = this.scalar * ((sizeVector.x / this.amountOfPositions) * x - this.positionsStart.x);
+		float yPosition = this.scalar * ((sizeVector.y / this.amountOfPositions) * y - this.positionsStart.y);
+		return new FloatVector(xPosition, yPosition);
+	}
+
+	public void drawEllipse(int x, int y, color pieceColour)
+	{
+		translate(position.x, position.y);
+		rotate(radians(this.rotation));
+		FloatVector coords = this.getPosition(x, y);
+		stroke(0);
+		fill(pieceColour);
+		ellipse(
+			coords.x, 
+			coords.y, 
+			this.baseBallRadius, 
+			this.baseBallRadius);
+		rotate(-radians(this.rotation));
+		translate(-position.x, -position.y);
+	}
+
+	public void drawPlayers() {
+		for (Player player : this.players) {
+			ArrayList<ClassicPiece> nestedPieces = new ArrayList<ClassicPiece>();
+			for (ClassicPiece piece : player.pieces) {
+				if(!piece.hasExitedNest)
+					nestedPieces.add(piece);
+				else{
+					this.drawPiece(piece, piece.x_int, piece.y_int, piece.team);
+				}
+			}
+			int[] positions = this.getNestStartPosion(player.team);
+			for (int i = 0; i < nestedPieces.size(); ++i) {
+				int x = i;
+				int y = 0;
+				if(x > 1)
+				{
+					y = int(x/2);
+					x -= 2;
+				}
+				x += positions[0];
+				y += positions[1];
+				this.drawEllipse(
+					x, 
+					y, 
+					this.getTeamColor(nestedPieces.get(i).team)
+				);
+			}
+		}
+	}
+
+	public int[] getNestStartPosion(Team team){
+		switch (team) {
+			case RED:
+				return new int[]{0, 0};
+
+			case BLUE:
+				return new int[]{9, 0};
+
+			case YELLOW:
+				return new int[]{0, 9};
+
+			case GREEN:
+				return new int[]{9, 9};
+
+			default:
+				println("How the fuck did this happen?");
+				return null;
+        }
+	}
+
+	public color getTeamColor(Team team) {
+		switch (team) {
+			case RED:
+				return color(255, 0, 0);
+
+			case BLUE:
+				return color(0, 0, 255);
+
+			case YELLOW:
+				return color(255, 255, 0);
+
+			case GREEN:
+				return color(0, 255, 0);
+
+			default:
+				println("How the fuck did this happen?");
+				return color(0, 0, 0);
+    	}
+    }
+
+    public void draw() {
+		this.board.draw(this.position, this.rotation, this.scalar);
+		
+    //Draws the base board.
+		drawXLine(4, 0, 4, -1, color(255));
+		drawXLine(6, 0, 4, -1, color(255));
+		drawXLine(4, 6, 10, -1, color(255));
+		drawXLine(6, 6, 10, -1, color(255));
+		drawXLine(0, 4, 6, -1, color(255));
+		drawXLine(10, 4, 6, -1, color(255));
+		
+		drawYLine(4, 0, 4, -1, color(255));
+		drawYLine(6, 0, 4, -1, color(255));
+		drawYLine(4, 6, 10, -1, color(255));
+		drawYLine(6, 6, 10, -1, color(255));
+		drawYLine(0, 4, 6, -1, color(255));
+		drawYLine(10, 4, 6, -1, color(255));
+
+		//Draws the colored circles.
+		drawYLine(5, 1, 4, -1, color(0, 0, 255));
+		drawYLine(5, 6, 9, -1, color(255, 255, 0));
+		drawXLine(5, 1, 4, -1, color(255, 0, 0));
+		drawXLine(5, 6, 9, -1, color(0, 255, 0));
+
+		this.drawPlayers();
+	}
+
+	public void drawXLine(int y, int start, int stop, int skip, color ballColor)
+	{	
+		translate(position.x, position.y);
+		rotate(radians(this.rotation));
+		FloatVector start_coords = this.getPosition(start, y);
+		FloatVector end_coords = this.getPosition(stop, y);
+		stroke(0);
+		line(start_coords.x, start_coords.y, end_coords.x, end_coords.y);
+		rotate(-radians(this.rotation));
+		translate(-position.x, -position.y);
+
+		for (int i=start; i < stop + 1; i++) {
+			if(i != skip) {
+				this.drawEllipse(i, y, ballColor);
+			}
+		}
+	}
+
+	public void drawYLine(int y, int start, int stop, int skip, color ballColor)
+	{
+		translate(position.x, position.y);
+		rotate(radians(this.rotation));
+		FloatVector start_coords = this.getPosition(y, start);
+		FloatVector end_coords = this.getPosition(y, stop);
+		stroke(0);
+		line(start_coords.x, start_coords.y, end_coords.x, end_coords.y);
+		rotate(-radians(this.rotation));
+		translate(-position.x, -position.y);
+
+		for (int i=start; i < stop + 1; i++) {
+			if(i != skip) {
+				this.drawEllipse(y, i, ballColor);
+			}
+		}
+	}
+}	
+
+public enum Team {
+    RED, 
+    BLUE, 
+    YELLOW, 
+    GREEN
+}
+
+public class Player {
+	public ArrayList<ClassicPiece> pieces;
+	public Team team;
+
+	public Player (ArrayList<ClassicPiece> pieces, Team team) {
+		this.pieces = pieces;
+		this.team = team;
+	}
+
+	public Player (Team team) {
+		this.pieces = new ArrayList<ClassicPiece>();
+		this.team = team;
+	}
+
+	public void addPiece(ClassicPiece piece){this.pieces.add(piece);}
+
+}
+
+public class ClassicPiece {
+	public int x_int, y_int;
+	public Team team;
+	public boolean hasFinished, hasExitedNest;
+
+	public ClassicPiece (Team team) {
+		this.team = team;
+		this.x_int = -1;
+		this.y_int = -1;
+
+		this.hasFinished = false;
+		this.hasExitedNest = false;
+	}
+
+	public String getName(){return "Classic Piece";}
+
+	public boolean isInTheGame(){return this.hasExitedNest && !this.hasFinished;}
+
+	public void draw(FiaManager fm, int x, int y, color teamColor) {
+		fm.drawEllipse(x, y, teamColor);
+	}
+}
