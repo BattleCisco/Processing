@@ -34,7 +34,7 @@ void setup() {
 		scalar
 	);
 	// for (int i = 0; i < 40; ++i) {
-	// 	chatlog.add_message("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
+	//  	chatlog.add_message("Lorem ipsum dolor sit amet, consectetur adipiscing elit");
 	// }
 
 	//Actual Fia
@@ -45,7 +45,12 @@ void setup() {
 	piece.y_int = 10;
 	piece.hasExitedNest = true;
 	p1.addPiece(piece);
-	p1.addPiece(new ClassicPiece(p1.team));
+	ClassicPiece piece2 = new ClassicPiece(p1.team);
+	piece2.x_int = 4;
+	piece2.y_int = 10;
+	piece2.hasExitedNest = true;
+	p1.addPiece(piece);
+	p1.addPiece(piece2);
 	p1.addPiece(new ClassicPiece(p1.team));
 	p1.addPiece(new ClassicPiece(p1.team));
 
@@ -82,6 +87,7 @@ void setup() {
 		new FloatVector(324, 324),
 		players
 	);
+	fm.setFms();
 }
 
 void draw() {
@@ -89,7 +95,7 @@ void draw() {
 	fm.draw();
 	chatlog.draw();
 	
-	if(frame % 3 == 0)
+	if(frame % 60 == 0)
 		fm.stepPiece(fm.players[0].pieces.get(0));
 
 	frame++;
@@ -97,17 +103,8 @@ void draw() {
 
 void keyPressed() {
 	println("if(keyCode == " + keyCode + "){} //" + key);
-	if(keyCode == 82){} //r
-	
-
 	if(keyCode == 48){} //0
-	if(keyCode == 49){} //1
-	if(keyCode == 50){} //2
-	if(keyCode == 51){} //3
-	if(keyCode == 52){} //4
-	if(keyCode == 53){} //5
-	if(keyCode == 54){} //6
-	if(keyCode == 55){} //7
+	
 	if(keyCode == 56){} //8
 	if(keyCode == 57){} //9
 	if(keyCode == 81){} //q
@@ -135,4 +132,39 @@ void keyPressed() {
 	if(keyCode == 66){} //b
 	if(keyCode == 78){} //n
 	if(keyCode == 77){} //m
+
+	if(keyCode == 82){} //r
+		if(fm.stage == Stage.WAITING_TO_ROLL){
+			int diceroll = (int) ((random(0, 1) * 100) % 6) + 1;
+			fm.current_diceroll = diceroll;
+			chatlog.add_message("Player #"  + (fm.current_player + 1) + " rolled a " + diceroll);
+			fm.stage = Stage.WAITING_TO_PICK_CHOICE;
+		}
+
+	if(keyCode == 53){} //5
+		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+			if(fm.summon1Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
+				fm.players[fm.current_player].summonPiece();
+				chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned one piece");
+			}
+			
+
+	if(keyCode == 54){} //6
+		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+			if(fm.summon2Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
+				fm.players[fm.current_player].summonPiece();
+				fm.players[fm.current_player].summonPiece();
+				chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned two pieces");
+			}
+
+
+	if(keyCode == 55){} //7
+		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+			if(fm.summon1Piece6Step(fm.players[fm.current_player], fm.current_diceroll))
+		
+	if(keyCode == 49){} //1
+	if(keyCode == 50){} //2
+	if(keyCode == 51){} //3
+	if(keyCode == 52){} //4
+	
 }
