@@ -36,10 +36,34 @@ public class CharacterManager {
 			}
 		}
 
-		for(Human ts: this.testSubjects) {
-			ts.update();
+		for (Human ts : testSubjects) {
+			if(ts instanceof Zombie)
+				ts.update(testSubjects);
+			else
+				ts.update();
 		}
 	}
+
+	// public boolean 
+	// 	int humans = 0;
+	// 	for (Human testSubject : testSubjects) {
+	// 		if(!(testSubject instanceof Zombie))
+	// 			humans++;
+	// 	}
+		
+	// 	if(humans == 0)
+	// 		return;
+
+	// 	float closest=0.0;
+	// 	for(Human testSubject : testSubjects) {
+	// 		if(!(testSubject instanceof Zombie))
+	// 		{
+	// 			FloatVector distance_vector = this.position.add(testSubject.position);
+	// 			float distance_magnitude = distance_vector.mag();
+	// 			if(distance_magnitude > closest)
+	// 				this.direction = asin(abs(distance_vector.y)/distance_magnitude);
+	// 		}
+	// 	}
 
 	public boolean collision(Human h1, Human h2) {
 		if(abs(h1.position.x - h2.position.x) > h1.size / 2 + h2.size / 2 || abs(h1.position.y - h2.position.y) >  h1.size / 2 + h2.size / 2)

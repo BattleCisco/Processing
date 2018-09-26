@@ -2,7 +2,7 @@ color zombie_color = color(0, 255, 0);
 public class Zombie extends Human {
 	public float speed = 3;
 	FloatVector position;
-	float direction;
+	public float direction;
 	float size;
 	
 	public Zombie(FloatVector position, float speed, float direction, float size) {
@@ -21,14 +21,61 @@ public class Zombie extends Human {
 		this.size = human.size;
 	}
 
-	public void update() {
-		if(random(0, 1) < 0.5)
+	public void setDirection(float f) {
+		this.direction = f;
+	}
+
+	public void update_walk(Human[] testSubjects) {
+		int humans = 0;
+		for (Human testSubject : testSubjects) {
+			if(!(testSubject instanceof Zombie))
+				humans++;
+		}
+		
+		if(humans > 0)
 		{
-			this.direction += 1;
+			for (int i = 0; i < testSubjects.length - 1; i++) {
+				float closest = 0.0;
+				for (int j = i + 1; j < testSubjects.length; j++) {
+					if(!(
+						testSubjects[i] instanceof Zombie ^ 
+						testSubjects[j] instanceof Zombie)) {
+						continue;
+					}
+					else if(i == j)
+						continue;
+
+					FloatVector distance_vector = testSubjects[i].position.subtract(testSubjects[j].position);
+					float distance_magnitude = abs(distance_vector.magNoSqrt());
+					if(distance_magnitude > closest)
+					{
+						if(testSubjects[i] instanceof Zombie)
+						{
+							print("i is a zombie, ");
+							closest = distance_magnitude;
+							print("Changed direction from " + testSubjects[i].direction);
+							Zombie z = (Zombie) testSubjects[i];
+							z.setDirection(degrees(asin(abs(distance_vector.y)/distance_vector.mag())));
+							println(" to " + testSubjects[i].direction);
+						}
+						else if (testSubjects[j] instanceof Zombie)
+						{	
+							print("j is a zombie, ");
+							closest = distance_magnitude;
+							print("Changed direction from " + testSubjects[j].direction);
+							Zombie z = (Zombie) testSubjects[j];
+							z.setDirection(degrees(asin(abs(distance_vector.y)/distance_vector.mag())));
+							println(" to " + testSubjects[j].direction);
+						}
+					}
+				}
+			}
 		}
-		else {
-			this.direction -= 1;
-		}
+	}	
+
+	public void update(Human[] testSubjects) {
+		
+		this.update_walk(testSubjects);
 
 		this.position.x += cos(radians(this.direction)) * this.speed;
 		this.position.y += sin(radians(this.direction)) * this.speed;
@@ -38,11 +85,11 @@ public class Zombie extends Human {
 				this.position.x += width;
 			if(this.position.x > width)
 				this.position.x -= width;
-		if(this.position.y < 0 || this.position.y > width)
+		if(this.position.y < 0 || this.position.y > height)
 			if(this.position.y < 0)
-				this.position.y += width;
-			if(this.position.y > width)
-				this.position.y -= width;
+				this.position.y += height;
+			if(this.position.y > height)
+				this.position.y -= height;
 	}
 
 	public void draw() {

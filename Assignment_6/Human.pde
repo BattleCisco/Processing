@@ -3,39 +3,59 @@ public class Human {
 	public FloatVector position;
 	public float speed, direction, size;
 
+	public float walk_distance, walked;
+
+	public Human() {}
+
 	public Human(FloatVector position, float speed, float direction, float size) {
 		this.position = position;
 		this.speed = speed;
 		this.direction = direction;
 		this.size = size;
+
+		this.walk_distance = 0.0;
+		this.walked = 0.0;
 	}
 
 	public void update_walk() {
+		if(walk_distance - walked <= 0)
+		{
+			this.direction += random(-1, 1) * 90;
+			this.walk_distance = random(0, 1) * 150 + 100;
+			this.walked = 0;
+		}
 		
 	}
 
-	public void update() {
-		if(random(0, 1) < 0.5)
-		{
-			this.direction += 1;
-		}
-		else {
-			this.direction -= 1;
-		}
+	public void update(Human[] testSubjects) {
+		this.update();
+	}
 
-		this.position.x += cos(radians(this.direction)) * this.speed;
-		this.position.y += sin(radians(this.direction)) * this.speed;
+	public void update() {
+		
+		float speed;
+		if(this.walk_distance - walked >= this.speed)
+			speed = this.speed;
+		else
+			speed = this.walk_distance - walked;
+
+		this.walked += speed;
+
+		this.position.x += cos(radians(this.direction)) * speed;
+		this.position.y += sin(radians(this.direction)) * speed;
 
 		if(this.position.x < 0 || this.position.x > width)
 			if(this.position.x < 0)
 				this.position.x += width;
 			if(this.position.x > width)
 				this.position.x -= width;
-		if(this.position.y < 0 || this.position.y > width)
+		if(this.position.y < 0 || this.position.y > height)
 			if(this.position.y < 0)
-				this.position.y += width;
-			if(this.position.y > width)
-				this.position.y -= width;
+				this.position.y += height;
+			if(this.position.y > height)
+				this.position.y -= height;
+
+		this.update_walk();
 	}
 
 	public void draw() {

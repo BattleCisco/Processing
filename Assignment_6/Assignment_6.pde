@@ -3,8 +3,8 @@ import java.text.DecimalFormat;
 CharacterManager gm;
 
 void setup() {
-	size(640, 480);
-	gm = new CharacterManager(25);
+	size(1280, 720);
+	gm = new CharacterManager(2);
 	strokeWeight(1.5);
   	stroke(255);
 }
