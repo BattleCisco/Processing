@@ -58,19 +58,13 @@ public class FiaManager {
         );
     }
 
-    public void setFms() {
-    	 for (Player player : this.players)
-    	 	player.setFm(this);
-
-    }
-
     public FloatVector getPostionsSumVector() {
         return this.positionsStart.add(this.positionsEnd);
     }
 
     public void drawPiece(ClassicPiece piece, int x, int y, int i, Team team) {
         //FloatVector positionToDraw = this.getPosition(x, y);
-        color teamColor = FiaFunctions.getTeamColor(team);
+        color teamColor = getTeamColor(team);
         piece.draw(this, x, y, i, teamColor);
     }
 
@@ -115,7 +109,7 @@ public class FiaManager {
                                 player.team);
                 }
             }
-            int[] positions = FiaFunctions.getNestStartPosion(player.team);
+            int[] positions = getNestStartPosion(player.team);
             for (int i = 0; i < nestedPieces.size(); ++i) {
                 int x = i;
                 int y = 0;
@@ -186,7 +180,6 @@ public class FiaManager {
 
     }
 
-
     public ArrayList<String> getChoices() {
         ArrayList<String> choices = new ArrayList<String>();
         switch (this.stage) {
@@ -226,21 +219,21 @@ public class FiaManager {
     }
 
     public boolean summon1Piece1Step(Player player, int diceroll){
-    	int[] spawn_position = FiaFunctions.getTeamStarterCoords(player.team);
+    	int[] spawn_position = getTeamStarterCoords(player.team);
         if(!player.friendlyPieceAt(spawn_position[0], spawn_position[1]) && diceroll == 1 && player.nestedPieces() > 0)
             return true;
         return false;
     }
 
     public boolean summon2Piece1Step(Player player, int diceroll){
-    	int[] spawn_position = FiaFunctions.getTeamStarterCoords(player.team);
+    	int[] spawn_position = getTeamStarterCoords(player.team);
         if(!player.friendlyPieceAt(spawn_position[0], spawn_position[1]) && diceroll == 6 && player.nestedPieces() > 1)
             return true;
         return false;
     }
 
     public boolean summon1Piece6Step(Player player, int diceroll){
-        int[] spawn_position = FiaFunctions.getTeamStarterCoords(player.team);
+        int[] spawn_position = getTeamStarterCoords(player.team);
         ClassicPiece dummyPiece = new ClassicPiece(player.team);
         dummyPiece.hasExitedNest = true;
         dummyPiece.x_int = spawn_position[0];
@@ -349,70 +342,6 @@ public class FiaManager {
 
 }
 
-static class FiaFunctions {
-  static int y = 10;  // Class variable
-
-  public static int[] getNestStartPosion(Team team) {
-        switch (team) {
-            case RED:
-                return new int[]{0, 0};
-
-            case BLUE:
-                return new int[]{9, 0};
-
-            case YELLOW:
-                return new int[]{0, 9};
-
-            case GREEN:
-                return new int[]{9, 9};
-
-            default:
-                println("How the fuck did this happen?");
-                return null;
-        }
-    }
-
-    public static color getTeamColor(Team team) {
-        switch (team) {
-            case RED:
-                return color(255, 0, 0);
-
-            case BLUE:
-                return color(0, 0, 255);
-
-            case YELLOW:
-                return color(255, 255, 0);
-
-            case GREEN:
-                return color(0, 255, 0);
-
-            default:
-                println("How the fuck did this happen?");
-                return color(0, 0, 0);
-        }
-    }
-
-    public static int[] getTeamStarterCoords(Team team) {
-        switch (team) {
-            case RED:
-                return new int[]{0, 4};
-
-            case BLUE:
-                return new int[]{6, 0};
-
-            case YELLOW:
-                return new int[]{4, 10};
-
-            case GREEN:
-                return new int[]{10, 6};
-
-            default:
-                println("How the fuck did this happen?");
-                return new int[]{5, 5};
-        }
-    }
-}
-
 enum Stage {
     WAITING_TO_ROLL,
     WAITING_TO_PICK_CHOICE,
@@ -428,9 +357,8 @@ enum Team {
 
 public class Player {
     public ArrayList<ClassicPiece> pieces;
-    public Team team;
+    public TeamEnums team;
     public String name;
-    public FiaManager fm;
 
     public Player (ArrayList<ClassicPiece> pieces, Team team, String name) {
         this.pieces = pieces;
@@ -442,10 +370,6 @@ public class Player {
         this.pieces = new ArrayList<ClassicPiece>();
         this.team = team;
         this.name = name;
-    }
-
-    public void setFm(FiaManager fm) {
-    	this.fm = fm;
     }
 
     public int nestedPieces(){
