@@ -15,6 +15,16 @@ class FloatVector {
 	// 	return new FloatVector(this.x.clone(), this.y.clone());
 	// }
 
+	public float angle90() {
+		FloatVector  v = new FloatVector(this.x, this.y);
+		println(
+			degrees(asin(v.y/v.mag())),
+			degrees(acos(v.x/v.mag())),
+			degrees(atan(v.y/v.x)));
+		return atan(v.y/v.x);
+		// return acos(v.x/v.mag());
+	}
+
 	public float mag()
 	{
 		return this.magnitude();

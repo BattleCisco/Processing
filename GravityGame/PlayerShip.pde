@@ -53,17 +53,17 @@ class PlayerShip {
     }
 
     public void update() {
-		this.position = new FloatVector(this.position.x % width, this.position.y % height);
-		while(this.position.x < 0 || this.position.x > width)
-			if(this.position.x < 0)
-				this.position.x += width;
-			if(this.position.x > width)
-				this.position.x -= width;
-		while(this.position.y < 0 || this.position.y > width)
-			if(this.position.y < 0)
-				this.position.y += width;
-			if(this.position.y > width)
-				this.position.y -= width;
+		this.position = new FloatVector(this.position.x, this.position.y);
+		// while(this.position.x < 0 || this.position.x > width)
+		// 	if(this.position.x < 0)
+		// 		this.position.x += width;
+		// 	if(this.position.x > width)
+		// 		this.position.x -= width;
+		// while(this.position.y < 0 || this.position.y > width)
+		// 	if(this.position.y < 0)
+		// 		this.position.y += width;
+		// 	if(this.position.y > width)
+		// 		this.position.y -= width;
 
 		if(this.IsleftKeyPressed() ^ this.IsrightKeyPressed())
 	    {
@@ -82,73 +82,38 @@ class PlayerShip {
     		this.velocity.addTo(new FloatVector(this.direction, this.thrust, true));
     	}
 
-    	this.position.addTo(this.velocity);
+    	this.position.addTo(this.velocity.multiply(0.95));
     }
 
+    public float velocityDirection() {
+		return degrees(asin(this.velocity.x / this.velocity.mag())) + 180;
+	}
+
 	public void draw() {
-		draw_spaceship(this.position, this.direction, 0.5, this.shipColor);
+		draw_spaceship(new FloatVector(0, 0), this.direction, this.shipColor);
 	}
 }
 
-void draw_spaceship(FloatVector position, float rotation, float multiplier, color shipColor)
+void draw_spaceship(FloatVector position, float rotation, color shipColor)
 {	
+	//translate(position.x, position.y);
+	rotate(radians(rotation));
+	
 	float x = position.x;
 	float y = position.y;
-	rotation += 90;
-	rotation *=  -1.0;
+	//rotation += 90;
+	//rotation *=  -1.0;
 
 	stroke(shipColor);
-	strokeWeight(4.1 * multiplier);
-	float f1 = 39.8;
-	float r1 = 0.869;
-	float f2 = -38.2;
-	float r2 = 0.000;
-	line(
-		x + multiplier * f1 * sin(radians(rotation) + r1), 
-		y + multiplier * f1 * cos(radians(rotation) + r1), 
-		x + multiplier * f2 * sin(radians(rotation) + r2), 
-		y + multiplier * f2 * cos(radians(rotation) + r2)
-	);
-	f1 = 39.8;
-	r1 = -0.869;
-	f2 = -38.2;
-	r2 = 0.000;
-	line(
-		x + multiplier * f1 * sin(radians(rotation) + r1), 
-		y + multiplier * f1 * cos(radians(rotation) + r1), 
-		x + multiplier * f2 * sin(radians(rotation) + r2), 
-		y + multiplier * f2 * cos(radians(rotation) + r2)
-	);
-	f1 = 38.2;
-	r1 = 0.869;
-	f2 = 38.2;
-	r2 = -0.869;
-	line(
-		x + multiplier * f1 * sin(radians(rotation) + r1), 
-		y + multiplier * f1 * cos(radians(rotation) + r1), 
-		x + multiplier * f2 * sin(radians(rotation) + r2), 
-		y + multiplier * f2 * cos(radians(rotation) + r2)
-	);
+	strokeWeight(4.1);
+	line(-25.694504, 30.394611, 38.2, 1.6697751E-6);
+	line(-25.694, -30.395, 38.2, 0);
+	line(-24.662, 29.173, -24.662, -29.173);
 
-	strokeWeight(6.9 * multiplier);
-	f1 = 44.5;
-	r1 = 0.369;
-	f2 = 29.9;
-	r2 = 0.571;
-	line(
-		x + multiplier * f1 * sin(radians(rotation) + r1), 
-		y + multiplier * f1 * cos(radians(rotation) + r1), 
-		x + multiplier * f2 * sin(radians(rotation) + r2), 
-		y + multiplier * f2 * cos(radians(rotation) + r2)
-	);
-	f1 = 44.5;
-	r1 = -0.369;
-	f2 = 29.9;
-	r2 = -0.571;
-	line(
-		x + multiplier * f1 * sin(radians(rotation) + r1), 
-		y + multiplier * f1 * cos(radians(rotation) + r1), 
-		x + multiplier * f2 * sin(radians(rotation) + r2), 
-		y + multiplier * f2 * cos(radians(rotation) + r2)
-	);
+	strokeWeight(6.9);
+	line(-41.505, 16.05, -25.157, 16.16);
+	line(-41.505, -16.05, -25.157, -16.16);
+	
+	rotate(-radians(rotation));
+	//translate(-position.x, -position.y);
 }

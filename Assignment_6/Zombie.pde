@@ -35,7 +35,7 @@ public class Zombie extends Human {
 		if(humans > 0)
 		{
 			for (int i = 0; i < testSubjects.length - 1; i++) {
-				float closest = 0.0;
+				float closest = Float.MAX_VALUE;
 				for (int j = i + 1; j < testSubjects.length; j++) {
 					if(!(
 						testSubjects[i] instanceof Zombie ^ 
@@ -45,26 +45,56 @@ public class Zombie extends Human {
 					else if(i == j)
 						continue;
 
-					FloatVector distance_vector = testSubjects[i].position.subtract(testSubjects[j].position);
-					float distance_magnitude = abs(distance_vector.magNoSqrt());
-					if(distance_magnitude > closest)
+					FloatVector distance_vector;
+					if(testSubjects[i] instanceof Zombie) {
+						distance_vector = testSubjects[i].position.subtract(testSubjects[j].position);
+					}
+					else {
+						distance_vector = testSubjects[j].position.subtract(testSubjects[i].position);
+					}
+					float distance_magnitude = distance_vector.magNoSqrt();
+
+					if(distance_magnitude < closest)
 					{
-						if(testSubjects[i] instanceof Zombie)
-						{
-							print("i is a zombie, ");
+						if(testSubjects[i] instanceof Zombie) {
+							////print("i is a zombie, ");
 							closest = distance_magnitude;
-							print("Changed direction from " + testSubjects[i].direction);
+							//print("Changed direction from " + testSubjects[i].direction);
 							Zombie z = (Zombie) testSubjects[i];
-							z.setDirection(degrees(asin(abs(distance_vector.y)/distance_vector.mag())));
-							println(" to " + testSubjects[i].direction);
+							// float rad = distance_vector.angle() + radians(180);
+							// if(asin(distance_vector.y/distance_vector.mag()) == acos(distance_vector.x/distance_vector.mag()))
+							// 	rad = asin(distance_vector.y/distance_vector.mag());
+							// else
+							// 	rad = PI - asin(distance_vector.y/distance_vector.mag());
+								//rad = asin(distance_vector.y/distance_vector.mag());
+							float rad;
+							if(distance_vector.y > 0){
+								if(distance_vector.x > 0)
+									rad = asin(distance_vector.y/distance_vector.mag());
+								else
+									rad = radians(180) - asin(distance_vector.y/distance_vector.mag());
+							}
+							else if (distance_vector.y < 0) {
+								if(distance_vector.x > 0)
+									rad = asin(distance_vector.y/distance_vector.mag());
+								else
+									rad = radians(180) - asin(distance_vector.y/distance_vector.mag());
+							}
+							else
+								rad = 0.0;
+
+							z.setDirection(degrees(rad) + 180);
+
+
+							//println(" to " + testSubjects[i].direction);
 						}
-						else if (testSubjects[j] instanceof Zombie)
-						{	
+						else if (testSubjects[j] instanceof Zombie) {	
 							print("j is a zombie, ");
 							closest = distance_magnitude;
 							print("Changed direction from " + testSubjects[j].direction);
 							Zombie z = (Zombie) testSubjects[j];
-							z.setDirection(degrees(asin(abs(distance_vector.y)/distance_vector.mag())));
+							float rad = asin(distance_vector.y/distance_vector.mag());
+							z.setDirection(degrees(rad));
 							println(" to " + testSubjects[j].direction);
 						}
 					}
@@ -94,6 +124,7 @@ public class Zombie extends Human {
 
 	public void draw() {
 		this.draw_zombie(this.position, this.direction, this.size/30, zombie_color);
+		//draw_angle(this.direction);
 	}
 
 	public void draw_zombie(FloatVector position, float rotation, float multiplier, color characterColor) {	
