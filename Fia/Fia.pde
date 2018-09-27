@@ -87,7 +87,6 @@ void setup() {
 		new FloatVector(324, 324),
 		players
 	);
-	fm.setFms();
 }
 
 void draw() {
