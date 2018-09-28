@@ -357,7 +357,7 @@ enum Team {
 
 public class Player {
     public ArrayList<ClassicPiece> pieces;
-    public TeamEnums team;
+    public Team team;
     public String name;
 
     public Player (ArrayList<ClassicPiece> pieces, Team team, String name) {
@@ -393,7 +393,7 @@ public class Player {
         for (int i=this.pieces.size(); i >= 0; i--) {
         	if(!this.pieces.get(i).hasExitedNest)
         	{
-        		int[] spawn_positions = this.fm.getTeamStarterCoords(this.team);
+        		int[] spawn_positions = getTeamStarterCoords(this.team);
         		this.pieces.get(i).hasExitedNest = true;
         		return true;
         	}

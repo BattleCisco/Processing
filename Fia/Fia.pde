@@ -103,7 +103,6 @@ void draw() {
 void keyPressed() {
 	println("if(keyCode == " + keyCode + "){} //" + key);
 	if(keyCode == 48){} //0
-	
 	if(keyCode == 56){} //8
 	if(keyCode == 57){} //9
 	if(keyCode == 81){} //q
@@ -132,7 +131,20 @@ void keyPressed() {
 	if(keyCode == 78){} //n
 	if(keyCode == 77){} //m
 
-	if(keyCode == 82){} //r
+	
+		
+	
+	
+	if(key == CODED)
+	{
+		if(keyCode == 49){} //1
+		if(keyCode == 50){} //2
+		if(keyCode == 51){} //3
+		if(keyCode == 52){} //4
+		
+		if(keyCode == 82) // R - Rolling the dice
+		{
+
 		if(fm.stage == Stage.WAITING_TO_ROLL){
 			int diceroll = (int) ((random(0, 1) * 100) % 6) + 1;
 			fm.current_diceroll = diceroll;
@@ -140,30 +152,27 @@ void keyPressed() {
 			fm.stage = Stage.WAITING_TO_PICK_CHOICE;
 		}
 
-	if(keyCode == 53){} //5
-		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
-			if(fm.summon1Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
-				fm.players[fm.current_player].summonPiece();
-				chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned one piece");
+		if(keyCode == 53){} //5
+			if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+				if(fm.summon1Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
+					fm.players[fm.current_player].summonPiece();
+					chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned one piece");
+				}
+				
+
+		if(keyCode == 54){} //6
+			if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+				if(fm.summon2Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
+					fm.players[fm.current_player].summonPiece();
+					fm.players[fm.current_player].summonPiece();
+					chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned two pieces");
+				}
+
+
+		if(keyCode == 55){} //7
+			if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
+				if(fm.summon1Piece6Step(fm.players[fm.current_player], fm.current_diceroll))
 			}
-			
+	}
 
-	if(keyCode == 54){} //6
-		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
-			if(fm.summon2Piece1Step(fm.players[fm.current_player], fm.current_diceroll)){
-				fm.players[fm.current_player].summonPiece();
-				fm.players[fm.current_player].summonPiece();
-				chatlog.add_message("Player #"  + (fm.current_player + 1) + " summoned two pieces");
-			}
-
-
-	if(keyCode == 55){} //7
-		if(fm.stage == Stage.WAITING_TO_PICK_CHOICE)
-			if(fm.summon1Piece6Step(fm.players[fm.current_player], fm.current_diceroll))
-		
-	if(keyCode == 49){} //1
-	if(keyCode == 50){} //2
-	if(keyCode == 51){} //3
-	if(keyCode == 52){} //4
-	
 }
