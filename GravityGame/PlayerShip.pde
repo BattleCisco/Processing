@@ -31,25 +31,37 @@ class PlayerShip {
     }
 
     public void pressKey() {
-        if(keyCode == this.leftKey)
-            this.leftKeyPressed = true;
+        switch(keyCode)
+        {
+            case LEFTKEY:
+                this.leftKeyPressed = true;
+                break;
 
-        if(keyCode == this.rightKey)
-            this.rightKeyPressed = true;
+            case RIGHTKEY:
+                this.rightKeyPressed = true;
+                break;
 
-        if(keyCode == this.thrustKey)
-        	this.thrustKeyPressed = true;
+            case THRUSTKEY:
+                this.thrustKeyPressed = true;
+                break;
+        }
     }
 
     public void releaseKey() {
-		if(keyCode == this.leftKey)
-            this.leftKeyPressed = false;
+        switch(keyCode)
+        {
+            case LEFTKEY:
+                this.leftKeyPressed = false;
+                break;
 
-        if(keyCode == this.rightKey)
-            this.rightKeyPressed = false;
+            case RIGHTKEY:
+                this.rightKeyPressed = false;
+                break;
 
-        if(keyCode == this.thrustKey)
-        	this.thrustKeyPressed = false;
+            case THRUSTKEY:
+                this.thrustKeyPressed = false;
+                break;
+        }
     }
 
     public void update() {
@@ -92,6 +104,22 @@ class PlayerShip {
 	public void draw() {
 		draw_spaceship(new FloatVector(0, 0), this.direction, this.shipColor);
 	}
+}
+
+PlayerKeys LEFTKEY, RIGHTKEY, THRUSTKEY, SHOOTKEY;
+public enum PlayerKeys{
+        LEFTKEY(37),
+        THRUSTKEY(38),
+        RIGHTKEY(39),
+        SHOOTKEY(3);
+
+        private final int value;
+
+        PlayerKeys(final int newValue) {
+            this.value = newValue;
+        }
+
+        public int getValue() { return value; }
 }
 
 void draw_spaceship(FloatVector position, float rotation, color shipColor)
