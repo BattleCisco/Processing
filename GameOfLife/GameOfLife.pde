@@ -8,7 +8,7 @@ int numberOfRows;
 int frame = 0;
 int framesPerUpdate = 50;
 float fillPercentage = 0.2;
-float chanceOfMutation = 0.2;
+float chanceOfMutation = 0.05;
 
 
 void setup() {
