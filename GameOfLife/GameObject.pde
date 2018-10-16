@@ -36,10 +36,23 @@ public class GameObject {
 
 		stroke(0);
 		rect(
-			this.x * cellSize, 
+			width_offset + this.x * cellSize, 
 			this.y * cellSize, 
 			cellSize, 
 			cellSize);
+	}
+
+	public boolean equals(GameObject other) {
+		if(this.x != other.x)
+			return false;
+
+		else if (this.y != other.y)
+			return false;
+
+		else if (this.alive != other.alive)
+			return false;
+
+		return true;
 	}
 
 }

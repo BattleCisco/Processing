@@ -1,5 +1,7 @@
 public class Animation {
 	public Animation () {}
+
+	public void draw(float progress) {}
 }
 
 public class Slide extends Animation{
@@ -28,7 +30,7 @@ public class Slide extends Animation{
 		//fill(255, 0, 0);
 		stroke(0);
 		rect(
-			this.start.x + differenceVector.x * sin(radians(90) * progress), 
+			width_offset + this.start.x + differenceVector.x * sin(radians(90) * progress), 
 			this.start.y + differenceVector.y * sin(radians(90) * progress), 
 			this.size * (0.5 + sin(radians(90) * progress) * 0.5), 
 			this.size * (0.5 + sin(radians(90) * progress) * 0.5));
@@ -51,7 +53,7 @@ public class Fade extends Animation{
 		fill(red(this.parentColor)* (1 - progress), green(this.parentColor)* (1 - progress), blue(this.parentColor)* (1 - progress));//, int(255 * (1 - progress)));
 		//fill(255, 0, 0);
 		stroke(0);
-		rect(this.position.x, this.position.y, this.size, this.size);
+		rect(width_offset + this.position.x, this.position.y, this.size, this.size);
 		stroke(0);
 	}
 
@@ -73,12 +75,12 @@ public class Implode extends Animation{
 		stroke(0);
 		fill(0);
 		rect(
-			this.position.x, 
+			width_offset + this.position.x, 
 			this.position.y, 
 			this.size, 
 			this.size);
 
-		translate(this.position.x + this.size / 2, this.position.y + this.size / 2);
+		translate(width_offset + this.position.x + this.size / 2, this.position.y + this.size / 2);
 		
 		rectMode(CENTER);
 		fill(red(this.parentColor)* (1 - progress), green(this.parentColor)* (1 - progress), blue(this.parentColor)* (1 - progress));//, int(255 * (1 - progress)));
@@ -87,7 +89,7 @@ public class Implode extends Animation{
 		rect(0, 0, this.size * (1 - progress), this.size * (1 - progress));
 		stroke(0);
 		rectMode(CORNER);
-		translate(-1 * (this.position.x + this.size / 2), -1 * (this.position.y + this.size / 2));
+		translate(-1 * (width_offset + this.position.x + this.size / 2), -1 * (this.position.y + this.size / 2));
 	}
 
 
@@ -108,12 +110,12 @@ public class Twist extends Animation{
 		stroke(0);
 		fill(0);
 		rect(
-			this.position.x, 
+			width_offset + this.position.x, 
 			this.position.y, 
 			this.size, 
 			this.size);
 
-		translate(this.position.x + this.size / 2, this.position.y + this.size / 2);
+		translate(width_offset + this.position.x + this.size / 2, this.position.y + this.size / 2);
 		rotate(radians(180) * progress);
 		
 		rectMode(CENTER);
@@ -124,7 +126,7 @@ public class Twist extends Animation{
 		stroke(0);
 
 		rotate(-radians(180) * progress);
-		translate(-1 * (this.position.x + this.size / 2), -1 * (this.position.y + this.size / 2));
+		translate(-1 * (width_offset + this.position.x + this.size / 2), -1 * (this.position.y + this.size / 2));
 	}
 
 
