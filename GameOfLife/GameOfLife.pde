@@ -10,7 +10,7 @@ int framesPerUpdate = 40;
 int baseFramePerUpdate = int(framesPerUpdate);
 
 float fillPercentage = 0.2;
-float chanceOfMutation = 0.2;
+float chanceOfMutation = 0.05;
 
 int width_offset = 300;
 int new_width;
