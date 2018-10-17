@@ -1,18 +1,20 @@
-public class Board {
+public class Simulation {
 	int generation;
+	int deadCells = 0;
 	Cell[] cells;
 	ArrayList<Animation> animations = new ArrayList<Animation>();
 
 	final float cellSize;
 	
-	public Board (float cellSize) {
+	public Simulation (float cellSize) {
 		this.generation = 0;
+		this.deadCells = 0;
 		this.cellSize = cellSize;
 		this.cells = new Cell[this.getNumberOfColumns() * this.getNumberOfRows()];
 
 		for (int y = 0; y < this.getNumberOfRows(); ++y)
 			for (int x = 0; x < this.getNumberOfColumns(); ++x) {
-				this.setCell(x, y, new Cell(x, y, color(0), false));
+				this.setCell(new Cell(x, y, color(0), false));
 				if (random(0, 1) < fillPercentage) {
 					Cell cell = this.getCell(x, y);
 					cell.alive = true;
@@ -21,18 +23,19 @@ public class Board {
 			}
 	}
 
-	public Board (Board board) {
-		this.generation = board.generation;
-		this.cellSize = board.cellSize;
-		this.cells = new Cell[board.getNumberOfColumns() * board.getNumberOfRows()];
+	public Simulation (Simulation other) {
+		this.generation = other.generation;
+		this.deadCells = other.deadCells;
+		this.cellSize = other.cellSize;
+		this.cells = new Cell[other.getNumberOfColumns() * other.getNumberOfRows()];
 
-		for (int y = 0; y < board.getNumberOfRows(); ++y)
-			for (int x = 0; x < board.getNumberOfColumns(); ++x) {
-				this.setCell(x, y, new Cell(board.getCell(x, y)));
+		for (int y = 0; y < other.getNumberOfRows(); ++y)
+			for (int x = 0; x < other.getNumberOfColumns(); ++x) {
+				this.setCell(new Cell(other.getCell(x, y)));
 			}
 	}
 
-	public boolean equals(Board other) {
+	public boolean equals(Simulation other) {
 		if(this.cellSize != other.cellSize)
 			return false;
 
@@ -53,73 +56,64 @@ public class Board {
 	public int getNumberOfRows() {return (int) Math.floor(height / this.cellSize);}
 	
 	public Cell getCell(int x, int y) {return this.cells[x + this.getNumberOfColumns() * y];}
-	public void setCell(int x, int y, Cell cell) {this.cells[x + this.getNumberOfColumns() * y] = cell;}
-	
+	public void setCell(Cell cell) {this.cells[cell.x + this.getNumberOfColumns() * cell.y] = cell;}
+	public void setCell(int x, int y, boolean alive) {
+		color randomColor = color((int) random(0, 255), (int) random(0, 255), (int) random(0, 255));
+		Cell cell = new Cell(x, y, randomColor, alive);
+		this.setCell(cell);
+	}
+	public void setCell(int x, int y, color c, boolean alive) {
+		Cell cell = new Cell(x, y, c, alive);
+		this.setCell(cell);
+	}
+
 	public void spawnAcorn(int x, int y) {
-		//These coordinates are from the top-left corner of the acorn.
-		this.setCellAlive(x + 3, y + 2, color(255, 0, 0));
-		this.setCellAlive(x + 2, y + 4, color(0, 255, 0));
-		this.setCellAlive(x + 3, y + 4, color(255, 0, 255));
-		this.setCellAlive(x + 5, y + 3, color(0, 255, 0));
-		this.setCellAlive(x + 6, y + 4, color(255, 0, 255));
-		this.setCellAlive(x + 7, y + 4, color(0, 255, 0));
-		this.setCellAlive(x + 8, y + 4, color(255, 255, 0));
+		this.setCell(x + 3, y + 2, color(255, 0, 0), true);
+		this.setCell(x + 2, y + 4, color(0, 255, 0), true);
+		this.setCell(x + 3, y + 4, color(255, 0, 255), true);
+		this.setCell(x + 5, y + 3, color(0, 255, 0), true);
+		this.setCell(x + 6, y + 4, color(255, 0, 255), true);
+		this.setCell(x + 7, y + 4, color(0, 255, 0), true);
+		this.setCell(x + 8, y + 4, color(255, 255, 0), true);
 	}
-
 	public void spawnGliderGun(int x, int y, int dx, int dy) {
-		this.setCellAlive(x + 25 * dx, y + 1 * dy);
-		this.setCellAlive(x + 23 * dx, y + 2 * dy);
-		this.setCellAlive(x + 25 * dx, y + 2 * dy);
-		this.setCellAlive(x + 13 * dx, y + 3 * dy);
-		this.setCellAlive(x + 14 * dx, y + 3 * dy);
-		this.setCellAlive(x + 21 * dx, y + 3 * dy);
-		this.setCellAlive(x + 22 * dx, y + 3 * dy);
-		this.setCellAlive(x + 35 * dx, y + 3 * dy);
-		this.setCellAlive(x + 36 * dx, y + 3 * dy);
-		this.setCellAlive(x + 12 * dx, y + 4 * dy);
-		this.setCellAlive(x + 16 * dx, y + 4 * dy);
-		this.setCellAlive(x + 21 * dx, y + 4 * dy);
-		this.setCellAlive(x + 22 * dx, y + 4 * dy);
-		this.setCellAlive(x + 35 * dx, y + 4 * dy);
-		this.setCellAlive(x + 36 * dx, y + 4 * dy);
-		this.setCellAlive(x + 1 * dx, y + 5 * dy);
-		this.setCellAlive(x + 2 * dx, y + 5 * dy);
-		this.setCellAlive(x + 11 * dx, y + 5 * dy);
-		this.setCellAlive(x + 17 * dx, y + 5 * dy);
-		this.setCellAlive(x + 21 * dx, y + 5 * dy);
-		this.setCellAlive(x + 22 * dx, y + 5 * dy);
-		this.setCellAlive(x + 1 * dx, y + 6 * dy);
-		this.setCellAlive(x + 2 * dx, y + 6 * dy);
-		this.setCellAlive(x + 11 * dx, y + 6 * dy);
-		this.setCellAlive(x + 15 * dx, y + 6 * dy);
-		this.setCellAlive(x + 17 * dx, y + 6 * dy);
-		this.setCellAlive(x + 18 * dx, y + 6 * dy);
-		this.setCellAlive(x + 23 * dx, y + 6 * dy);
-		this.setCellAlive(x + 25 * dx, y + 6 * dy);
-		this.setCellAlive(x + 11 * dx, y + 7 * dy);
-		this.setCellAlive(x + 17 * dx, y + 7 * dy);
-		this.setCellAlive(x + 25 * dx, y + 7 * dy);
-		this.setCellAlive(x + 12 * dx, y + 8 * dy);
-		this.setCellAlive(x + 16 * dx, y + 8 * dy);
-		this.setCellAlive(x + 13 * dx, y + 9 * dy);
-		this.setCellAlive(x + 14 * dx, y + 9 * dy);
-		this.setCellAlive(x + 8 * dx, y + 2 * dy);
-	}
-
-	public void killAllCells() {
-		for (int i = 0; i < this.cells.length; ++i){
-			Cell cell = this.cells[i];
-			cell.alive = false;
-		}
-	}
-
-	public void setCellAlive(int x, int y)
-	{
-		this.setCellAlive(x, y , color((int) random(0, 255), (int) random(0, 255), (int) random(0, 255)));
-	}
-
-	public void setCellAlive(int x, int y, color c) {
-		this.setCell(x, y, new Cell(x, y, c, true));
+		this.setCell(x + 25 * dx, y + 1 * dy, true);
+		this.setCell(x + 23 * dx, y + 2 * dy, true);
+		this.setCell(x + 25 * dx, y + 2 * dy, true);
+		this.setCell(x + 13 * dx, y + 3 * dy, true);
+		this.setCell(x + 14 * dx, y + 3 * dy, true);
+		this.setCell(x + 21 * dx, y + 3 * dy, true);
+		this.setCell(x + 22 * dx, y + 3 * dy, true);
+		this.setCell(x + 35 * dx, y + 3 * dy, true);
+		this.setCell(x + 36 * dx, y + 3 * dy, true);
+		this.setCell(x + 12 * dx, y + 4 * dy, true);
+		this.setCell(x + 16 * dx, y + 4 * dy, true);
+		this.setCell(x + 21 * dx, y + 4 * dy, true);
+		this.setCell(x + 22 * dx, y + 4 * dy, true);
+		this.setCell(x + 35 * dx, y + 4 * dy, true);
+		this.setCell(x + 36 * dx, y + 4 * dy, true);
+		this.setCell(x + 1 * dx, y + 5 * dy, true);
+		this.setCell(x + 2 * dx, y + 5 * dy, true);
+		this.setCell(x + 11 * dx, y + 5 * dy, true);
+		this.setCell(x + 17 * dx, y + 5 * dy, true);
+		this.setCell(x + 21 * dx, y + 5 * dy, true);
+		this.setCell(x + 22 * dx, y + 5 * dy, true);
+		this.setCell(x + 1 * dx, y + 6 * dy, true);
+		this.setCell(x + 2 * dx, y + 6 * dy, true);
+		this.setCell(x + 11 * dx, y + 6 * dy, true);
+		this.setCell(x + 15 * dx, y + 6 * dy, true);
+		this.setCell(x + 17 * dx, y + 6 * dy, true);
+		this.setCell(x + 18 * dx, y + 6 * dy, true);
+		this.setCell(x + 23 * dx, y + 6 * dy, true);
+		this.setCell(x + 25 * dx, y + 6 * dy, true);
+		this.setCell(x + 11 * dx, y + 7 * dy, true);
+		this.setCell(x + 17 * dx, y + 7 * dy, true);
+		this.setCell(x + 25 * dx, y + 7 * dy, true);
+		this.setCell(x + 12 * dx, y + 8 * dy, true);
+		this.setCell(x + 16 * dx, y + 8 * dy, true);
+		this.setCell(x + 13 * dx, y + 9 * dy, true);
+		this.setCell(x + 14 * dx, y + 9 * dy, true);
+		this.setCell(x + 8 * dx, y + 2 * dy, true);
 	}
 
 	public int getAliveNeighbors(Cell cell) {
@@ -214,10 +208,15 @@ public class Board {
 		return color(redSum, greenSum, blueSum);
 	}
 
-	public void update() {
+	public void step() {
 		ArrayList<Cell> changedCells = getChangedCells();
+		for(Cell cell : changedCells) {
+			if(!cell.alive)
+				this.deadCells++;
+		}
+
 		for (Cell cell : changedCells) {
-			this.setCell(cell.x, cell.y, new Cell(cell));
+			this.setCell(new Cell(cell));
 		}
 
 		this.generation++;
@@ -286,7 +285,7 @@ public class Board {
 	
 		for (int y = 0; y < this.getNumberOfRows(); ++y)
 			for (int x = 0; x < this.getNumberOfColumns(); ++x) {
-				Cell cell = board.getCell(x, y);
+				Cell cell = this.getCell(x, y);
 				cell.draw(this.cellSize);
 			}
 
@@ -310,7 +309,7 @@ public class Board {
 			else {
 				c = getInheritedColor(x, y);
 			}
-			this.setCell(x, y, new Cell(this.getCell(x, y), c, true));
+			this.setCell(new Cell(this.getCell(x, y), c, true));
 		}
 
 		else if (mousePressed && (mouseButton == RIGHT)) {
@@ -324,9 +323,16 @@ public class Board {
 			else {
 				c = getInheritedColor(x, y);
 			}
-			this.setCell(x, y, new Cell(this.getCell(x, y), c, false));
+			this.setCell(new Cell(this.getCell(x, y), c, false));
 		}
 
 		this.prepareAnimations();
+	}
+
+	public void killAllCells() {
+		for (int i = 0; i < this.cells.length; ++i){
+			Cell cell = this.cells[i];
+			cell.alive = false;
+		}
 	}
 }
