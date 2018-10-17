@@ -1,23 +1,23 @@
-public class GameObject {
+public class Cell {
 	int x, y; 
 	boolean alive;
 	color cellColor;
 
-	public GameObject (int x, int y, color cellColor, boolean alive) {
+	public Cell (int x, int y, color cellColor, boolean alive) {
 		this.x = x;
 		this.y = y;
 		this.cellColor = cellColor;
 		this.alive = alive;
 	}
 
-	public GameObject (GameObject cell, color cellColor, boolean alive) {
+	public Cell (Cell cell, color cellColor, boolean alive) {
 		this.x = cell.x;
 		this.y = cell.y;
 		this.cellColor = cellColor;
 		this.alive = alive;
 	}
 
-	public GameObject (GameObject cell) {
+	public Cell (Cell cell) {
 		this.x = cell.x;
 		this.y = cell.y;
 		this.cellColor = cell.cellColor;
@@ -28,21 +28,16 @@ public class GameObject {
 		if(this.alive)
 		{
 			fill(this.cellColor);
+			stroke(0);
+			rect(
+				widthOffset + this.x * cellSize, 
+				this.y * cellSize, 
+				cellSize, 
+				cellSize);
 		}
-		else
-		{
-			fill(0);
-		}
-
-		stroke(0);
-		rect(
-			width_offset + this.x * cellSize, 
-			this.y * cellSize, 
-			cellSize, 
-			cellSize);
 	}
 
-	public boolean equals(GameObject other) {
+	public boolean equals(Cell other) {
 		if(this.x != other.x)
 			return false;
 
